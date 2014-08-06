@@ -1,0 +1,17 @@
+{
+    "name": "matrix",
+    "version": "0.0.1",
+    "main": "matrix.js",
+    "scripts": [
+        "matrix.js"
+    ],
+    "ignore": [
+        ".DS_Store",
+        ".git",
+        ".gitignore",
+        ".npmignore",
+        "node_modules",
+        "package.json",
+        "src"
+    ]
+}
