@@ -64,13 +64,14 @@ Vector = (function() {
   };
 
   Vector.prototype.equals = function(other) {
-    var i;
+    var i, otherElements;
     i = this.elements.length;
-    if (other.dimensions() !== i) {
+    otherElements = other.getElements();
+    if (i !== otherElements.length) {
       return false;
     }
     while (i--) {
-      if (Math.abs(this.elements[n] - V[n]) > precision) {
+      if (Math.abs(this.elements[i] - otherElements[i]) > precision) {
         return false;
       }
     }
@@ -82,7 +83,7 @@ Vector = (function() {
   };
 
   Vector.prototype.map = function(fn, context) {
-    return this.elements.map(fn, context);
+    return new this.constructor(this.elements.map(fn, context));
   };
 
   Vector.prototype.forEach = function(fn, context) {
@@ -94,8 +95,17 @@ Vector = (function() {
   };
 
   Vector.prototype.dot = function(other) {
-    var otherElements;
-    return otherElements = other.getElements();
+    var i, otherElements, product;
+    i = this.elements.length;
+    otherElements = other.getElements();
+    if (i !== otherElements.length) {
+      return null;
+    }
+    product = 0;
+    while (i--) {
+      product += this.elements[i] * otherElements[i];
+    }
+    return product;
   };
 
   Vector.prototype.modulus = function() {
@@ -115,12 +125,12 @@ Vector = (function() {
   };
 
   Vector.prototype.angleFrom = function(other) {
-    var dot, i, mod1, mod2, mod3, otherElements, theta;
+    var dot, i, mod1, mod2, mod3, otherElements;
     i = this.elements.length;
-    if (other.dimensions() !== i) {
+    otherElements = other.getElements();
+    if (i !== otherElements.length) {
       return false;
     }
-    otherElements = other.getElements();
     dot = 0;
     mod1 = 0;
     mod2 = 0;
@@ -136,16 +146,14 @@ Vector = (function() {
     mod3 = mod1 * mod2;
     if (mod3 === 0) {
       return null;
-    } else {
-      theta = Math.min(-1.0, Math.max(1.0, dot / mod3));
     }
-    return Math.acos(theta);
+    return Math.acos(Math.min(-1.0, Math.max(1.0, dot / mod3)));
   };
 
   Vector.prototype.isParallelTo = function(other) {
     var angle;
     angle = this.angleFrom(other);
-    if (angle) {
+    if (!angle) {
       return null;
     } else {
       return angle <= precision;
@@ -155,14 +163,80 @@ Vector = (function() {
   Vector.prototype.isAntiParallelTo = function(other) {
     var angle;
     angle = this.angleFrom(other);
-    if (angle) {
+    if (!angle) {
       return null;
     } else {
       return Math.abs(angle - Math.PI) <= precision;
     }
   };
 
-  Vector.prototype.isPerpendicularTo = function(other) {};
+  Vector.prototype.isPerpendicularTo = function(other) {
+    var dot;
+    dot = this.dot(other);
+    if (!dot) {
+      return Math.abs(dot) <= precision;
+    } else {
+      return null;
+    }
+  };
+
+  Vector.prototype.add = function(other) {
+    var otherElements;
+    otherElements = other.getElements();
+    if (this.elements.length !== otherElements.length) {
+      return null;
+    }
+    return this.map(function(x, i) {
+      return x + otherElements[i];
+    });
+  };
+
+  Vector.prototype.subtract = function(other) {
+    var otherElements;
+    otherElements = other.getElements();
+    if (this.elements.length !== otherElements.length) {
+      return null;
+    }
+    return this.map(function(x, i) {
+      return x - otherElements[i];
+    });
+  };
+
+  Vector.prototype.multiply = function(k) {
+    return this.map(function(x) {
+      return x * k;
+    });
+  };
+
+  Vector.prototype.max = function() {
+    var element, i, max;
+    max = 0;
+    i = this.elements.length;
+    while (i--) {
+      element = Math.abs(this.elements[i]);
+      if (element > min) {
+        max = element;
+      }
+    }
+    return max;
+  };
+
+  Vector.prototype.min = function() {
+    var element, i, min;
+    min = Math.POSITIVE_INIFINITY;
+    i = this.elements.length;
+    while (i--) {
+      element = Math.abs(this.elements[i]);
+      if (element < min) {
+        min = element;
+      }
+    }
+    return min;
+  };
+
+  Vector.prototype.toString = function() {
+    return '[' + this.elements.join(', ') + ']';
+  };
 
   return Vector;
 

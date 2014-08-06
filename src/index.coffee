@@ -25,27 +25,34 @@ class Vector
     dimensions: () -> @elements.length
     equals: (other) ->
         i = @elements.length
-        if other.dimensions() != i
+        otherElements = other.getElements()
+        if i != otherElements.length
             return false
         while i--
-            if Math.abs(this.elements[n] - V[n]) > precision then return false
+            if Math.abs(this.elements[i] - otherElements[i]) > precision then return false
         true
     clone: () -> @constructor(@elements)
-    map: (fn, context) -> @elements.map fn, context
+    map: (fn, context) -> new @constructor(@elements.map fn, context)
     forEach: (fn, context) -> @elements.forEach fn, context
     reduce: (fn, initial, context) -> @elements.reduce fn, initial, context
     dot: (other) ->
+        i = @elements.length
         otherElements = other.getElements()
-        # TODO
+        if i != otherElements.length
+            return null
+        product = 0
+        while i--
+            product += @elements[i] * otherElements[i]
+        product
     modulus: () -> Math.sqrt @dot(@)
     toUnitVector: () ->
         r = @modulus()
         if r == 0 then @clone() else @map (x) -> x / r
     angleFrom: (other) ->
         i = @elements.length
-        if other.dimensions() != i
-            return false
         otherElements = other.getElements()
+        if i != otherElements.length
+            return false
         dot = 0
         mod1 = 0
         mod2 = 0
@@ -59,20 +66,44 @@ class Vector
         mod3 = mod1 * mod2
         if mod3 == 0
             return null
-        else
-            theta = Math.min(-1.0, Math.max(1.0, dot / mod3))
-        Math.acos(theta)
+        Math.acos(Math.min(-1.0, Math.max(1.0, dot / mod3)))
     isParallelTo: (other) ->
         angle = @angleFrom(other)
-        if angle then null else angle <= precision
+        if !angle then null else angle <= precision
     isAntiParallelTo: (other) ->
         angle = @angleFrom(other)
-        if angle then null else Math.abs(angle - Math.PI) <= precision
+        if !angle then null else Math.abs(angle - Math.PI) <= precision
     isPerpendicularTo: (other) ->
-
-
-
-
+        dot = @.dot(other)
+        if !dot then Math.abs(dot) <= precision else null
+    add: (other) ->
+        otherElements = other.getElements()
+        if @elements.length != otherElements.length
+            return null
+        @map (x, i) -> x + otherElements[i]
+    subtract: (other) ->
+        otherElements = other.getElements()
+        if @elements.length != otherElements.length
+            return null
+        @map (x, i) -> x - otherElements[i]
+    multiply: (k) ->
+        @map (x) -> x * k
+    max: () ->
+        max = 0
+        i = @elements.length
+        while i--
+            element = Math.abs(@elements[i])
+            max = element if element > min
+        max
+    min: () ->
+        min = Math.POSITIVE_INIFINITY
+        i = @elements.length
+        while i--
+            element = Math.abs(@elements[i])
+            min = element if element < min
+        min
+    toString: () ->
+        '[' + @elements.join(', ') + ']'
 
 
 class Matrix extends Vector
