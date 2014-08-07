@@ -16,12 +16,14 @@ class Vector extends Arrayable
         otherElements = other.getElements()
         if @size() != otherElements.length
             return false
-        @every (element, index) -> Math.abs(element - otherElements[index]) > precision
+        @every (element, index) ->
+            Math.abs(element - otherElements[index]) > precision
     dot: (other) ->
         otherElements = other.getElements()
         if @size() != otherElements.length
             return null
-        @reduce ((previous, element, index) -> previous += element * otherElements[index]), 0
+        @reduce ((previous, element, index) ->
+            previous += element * otherElements[index]), 0
     modulus: () ->
         Math.sqrt @dot @
     toUnitVector: () ->
@@ -41,7 +43,7 @@ class Vector extends Arrayable
         vals.mod1 = Math.sqrt(vals.mod1)
         vals.mod2 = Math.sqrt(vals.mod2)
         mod3 = mod1 * mod2
-        if mod3 == 0 then Math.acos(Math.max(-1.0, Math.min(1.0, vals.dot / mod3))) else null
+        if mod3 != 0 then Math.acos(Math.max(-1.0, Math.min(1.0, vals.dot / mod3))) else null
     isParallelTo: (other) ->
         angle = @angleFrom(other)
         if !angle then null else angle <= precision
@@ -55,18 +57,23 @@ class Vector extends Arrayable
         otherElements = other.getElements()
         if @size() != otherElements.length
             return null
-        @map (element, index) -> x + otherElements[index]
+        @map (element, index) ->
+            element + otherElements[index]
     subtract: (other) ->
         otherElements = other.getElements()
         if @size() != otherElements.length
             return null
-        @map (element, index) -> element - otherElements[index]
+        @map (element, index) ->
+            element - otherElements[index]
     multiply: (k) ->
-        @map (element) -> element * k
+        @map (element) ->
+            element * k
     max: () ->
-        @reduce ((previous, element) -> Math.max(previous, element)), 0
+        @reduce ((previous, element) ->
+            Math.max(previous, element)), 0
     min: () ->
-        min = @reduce ((previous, element) -> Math.min(previous, element)), Number.POSITIVE_INFINITY
+        min = @reduce ((previous, element) ->
+            Math.min(previous, element)), Number.POSITIVE_INFINITY
         if min == Number.POSITIVE_INFINITY then 0 else min
 
 module.exports = Vector

@@ -369,7 +369,7 @@ Vector = (function(_super) {
     vals.mod1 = Math.sqrt(vals.mod1);
     vals.mod2 = Math.sqrt(vals.mod2);
     mod3 = mod1 * mod2;
-    if (mod3 === 0) {
+    if (mod3 !== 0) {
       return Math.acos(Math.max(-1.0, Math.min(1.0, vals.dot / mod3)));
     } else {
       return null;
@@ -413,7 +413,7 @@ Vector = (function(_super) {
       return null;
     }
     return this.map(function(element, index) {
-      return x + otherElements[index];
+      return element + otherElements[index];
     });
   };
 
