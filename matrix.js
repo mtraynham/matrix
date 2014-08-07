@@ -312,23 +312,24 @@ Vector = (function(_super) {
   };
 
   Vector.prototype.equals = function(other) {
-    var i, otherElements;
-    i = this.elements.length;
+    var i, match, otherElements;
+    i = this.size();
     otherElements = other.getElements();
     if (i !== otherElements.length) {
       return false;
     }
-    while (i--) {
+    match = true;
+    while (i-- && match) {
       if (Math.abs(this.elements[i] - otherElements[i]) > precision) {
         return false;
       }
     }
-    return true;
+    return match;
   };
 
   Vector.prototype.dot = function(other) {
     var i, otherElements, product;
-    i = this.elements.length;
+    i = this.size();
     otherElements = other.getElements();
     if (i !== otherElements.length) {
       return null;
@@ -358,10 +359,10 @@ Vector = (function(_super) {
 
   Vector.prototype.angleFrom = function(other) {
     var dot, i, mod1, mod2, mod3, otherElements;
-    i = this.elements.length;
+    i = this.size();
     otherElements = other.getElements();
     if (i !== otherElements.length) {
-      return false;
+      return null;
     }
     dot = 0;
     mod1 = 0;

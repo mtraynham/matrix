@@ -15,15 +15,16 @@ class Vector extends Arrayable
     @random: (length) ->
         @.create length, () -> Math.random()
     equals: (other) ->
-        i = @elements.length
+        i = @size()
         otherElements = other.getElements()
         if i != otherElements.length
             return false
-        while i--
-            if Math.abs(this.elements[i] - otherElements[i]) > precision then return false
-        true
+        match = true
+        while i-- && match
+            if Math.abs(@elements[i] - otherElements[i]) > precision then return false
+        match
     dot: (other) ->
-        i = @elements.length
+        i = @size()
         otherElements = other.getElements()
         if i != otherElements.length
             return null
@@ -37,10 +38,10 @@ class Vector extends Arrayable
         r = @modulus()
         if r == 0 then @clone() else @map (x) -> x / r
     angleFrom: (other) ->
-        i = @elements.length
+        i = @size()
         otherElements = other.getElements()
         if i != otherElements.length
-            return false
+            return null
         dot = 0
         mod1 = 0
         mod2 = 0

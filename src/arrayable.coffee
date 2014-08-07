@@ -1,3 +1,5 @@
+# Acts as a wrapper for the Array object
+# Should be easier with ECMA6, maybe they will just extend Array
 class Arrayable
     constructor: () ->
         if arguments.length > 1
