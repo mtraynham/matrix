@@ -4,9 +4,7 @@ class Vector extends Arrayable
     @name: 'Vector'
     @create: (length = 0, valueFn = () -> 0.0) ->
         vector = new @ length
-        i = length
-        while i--
-            vector.set i, valueFn i
+        vector.set i, valueFn i for i in [0..length - 1] by 1
         vector
     @zeros: (length) ->
         @.create length, () -> 0.0
@@ -15,47 +13,35 @@ class Vector extends Arrayable
     @random: (length) ->
         @.create length, () -> Math.random()
     equals: (other) ->
-        i = @size()
         otherElements = other.getElements()
-        if i != otherElements.length
+        if @size() != otherElements.length
             return false
-        match = true
-        while i-- && match
-            if Math.abs(@elements[i] - otherElements[i]) > precision then return false
-        match
+        @every (element, index) -> Math.abs(element - otherElements[index]) > precision
     dot: (other) ->
-        i = @size()
         otherElements = other.getElements()
-        if i != otherElements.length
+        if @size() != otherElements.length
             return null
-        product = 0
-        while i--
-            product += @elements[i] * otherElements[i]
-        product
+        @reduce ((previous, element, index) -> previous += element * otherElements[index]), 0
     modulus: () ->
         Math.sqrt @dot @
     toUnitVector: () ->
         r = @modulus()
         if r == 0 then @clone() else @map (x) -> x / r
     angleFrom: (other) ->
-        i = @size()
         otherElements = other.getElements()
-        if i != otherElements.length
+        if @size() != otherElements.length
             return null
-        dot = 0
-        mod1 = 0
-        mod2 = 0
-        @forEach (x, j) ->
-            otherElement = otherElements[j]
-            dot += x * otherElement
-            mod1 += x ** 2
-            mod2 += otherElement ** 2
-        mod1 = Math.sqrt(mod1)
-        mod2 = Math.sqrt(mod2)
+        vals = @reduce (previous, element, index) ->
+            otherElement = otherElements[index]
+            previous.dot += element * otherElement
+            previous.mod1 += element ** 2
+            previous.mod2 += otherElement ** 2
+            previous
+        , dot: 0, mod1: 0, mod2: 0
+        vals.mod1 = Math.sqrt(vals.mod1)
+        vals.mod2 = Math.sqrt(vals.mod2)
         mod3 = mod1 * mod2
-        if mod3 == 0
-            return null
-        Math.acos(Math.min(-1.0, Math.max(1.0, dot / mod3)))
+        if mod3 == 0 then Math.acos(Math.max(-1.0, Math.min(1.0, vals.dot / mod3))) else null
     isParallelTo: (other) ->
         angle = @angleFrom(other)
         if !angle then null else angle <= precision
@@ -66,29 +52,21 @@ class Vector extends Arrayable
         dot = @.dot(other)
         if !dot then Math.abs(dot) <= precision else null
     add: (other) ->
-        if @size() != other.size()
+        otherElements = other.getElements()
+        if @size() != otherElements.length
             return null
-        @map (x, i) -> x + other.get(i)
+        @map (element, index) -> x + otherElements[index]
     subtract: (other) ->
         otherElements = other.getElements()
-        if @elements.length != otherElements.length
+        if @size() != otherElements.length
             return null
-        @map (x, i) -> x - otherElements[i]
+        @map (element, index) -> element - otherElements[index]
     multiply: (k) ->
-        @map (x) -> x * k
+        @map (element) -> element * k
     max: () ->
-        max = 0
-        i = @elements.length
-        while i--
-            element = Math.abs(@elements[i])
-            max = element if element > min
-        max
+        @reduce ((previous, element) -> Math.max(previous, element)), 0
     min: () ->
-        min = Math.POSITIVE_INIFINITY
-        i = @elements.length
-        while i--
-            element = Math.abs(@elements[i])
-            min = element if element < min
-        min
+        min = @reduce ((previous, element) -> Math.min(previous, element)), Number.POSITIVE_INFINITY
+        if min == Number.POSITIVE_INFINITY then 0 else min
 
 module.exports = Vector

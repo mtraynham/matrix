@@ -92,7 +92,7 @@ Arrayable = (function() {
   };
 
   Arrayable.prototype.slice = function() {
-    return this.elements.slice.apply(this.elements, arguments);
+    return new this.constructor(this.elements.slice.apply(this.elements, arguments));
   };
 
   Arrayable.prototype.toString = function() {
@@ -144,7 +144,7 @@ Arrayable = (function() {
   };
 
   Arrayable.prototype.map = function() {
-    return this.elements.map.apply(this.elements, arguments);
+    return new this.constructor(this.elements.map.apply(this.elements, arguments));
   };
 
   Arrayable.prototype.reduce = function() {
@@ -276,7 +276,7 @@ Vector = (function(_super) {
   Vector.name = 'Vector';
 
   Vector.create = function(length, valueFn) {
-    var i, vector;
+    var i, vector, _i, _ref;
     if (length == null) {
       length = 0;
     }
@@ -286,8 +286,7 @@ Vector = (function(_super) {
       };
     }
     vector = new this(length);
-    i = length;
-    while (i--) {
+    for (i = _i = 0, _ref = length - 1; _i <= _ref; i = _i += 1) {
       vector.set(i, valueFn(i));
     }
     return vector;
@@ -312,33 +311,25 @@ Vector = (function(_super) {
   };
 
   Vector.prototype.equals = function(other) {
-    var i, match, otherElements;
-    i = this.size();
+    var otherElements;
     otherElements = other.getElements();
-    if (i !== otherElements.length) {
+    if (this.size() !== otherElements.length) {
       return false;
     }
-    match = true;
-    while (i-- && match) {
-      if (Math.abs(this.elements[i] - otherElements[i]) > precision) {
-        return false;
-      }
-    }
-    return match;
+    return this.every(function(element, index) {
+      return Math.abs(element - otherElements[index]) > precision;
+    });
   };
 
   Vector.prototype.dot = function(other) {
-    var i, otherElements, product;
-    i = this.size();
+    var otherElements;
     otherElements = other.getElements();
-    if (i !== otherElements.length) {
+    if (this.size() !== otherElements.length) {
       return null;
     }
-    product = 0;
-    while (i--) {
-      product += this.elements[i] * otherElements[i];
-    }
-    return product;
+    return this.reduce((function(previous, element, index) {
+      return previous += element * otherElements[index];
+    }), 0);
   };
 
   Vector.prototype.modulus = function() {
@@ -358,29 +349,31 @@ Vector = (function(_super) {
   };
 
   Vector.prototype.angleFrom = function(other) {
-    var dot, i, mod1, mod2, mod3, otherElements;
-    i = this.size();
+    var mod3, otherElements, vals;
     otherElements = other.getElements();
-    if (i !== otherElements.length) {
+    if (this.size() !== otherElements.length) {
       return null;
     }
-    dot = 0;
-    mod1 = 0;
-    mod2 = 0;
-    this.forEach(function(x, j) {
+    vals = this.reduce(function(previous, element, index) {
       var otherElement;
-      otherElement = otherElements[j];
-      dot += x * otherElement;
-      mod1 += Math.pow(x, 2);
-      return mod2 += Math.pow(otherElement, 2);
+      otherElement = otherElements[index];
+      previous.dot += element * otherElement;
+      previous.mod1 += Math.pow(element, 2);
+      previous.mod2 += Math.pow(otherElement, 2);
+      return previous;
+    }, {
+      dot: 0,
+      mod1: 0,
+      mod2: 0
     });
-    mod1 = Math.sqrt(mod1);
-    mod2 = Math.sqrt(mod2);
+    vals.mod1 = Math.sqrt(vals.mod1);
+    vals.mod2 = Math.sqrt(vals.mod2);
     mod3 = mod1 * mod2;
     if (mod3 === 0) {
+      return Math.acos(Math.max(-1.0, Math.min(1.0, vals.dot / mod3)));
+    } else {
       return null;
     }
-    return Math.acos(Math.min(-1.0, Math.max(1.0, dot / mod3)));
   };
 
   Vector.prototype.isParallelTo = function(other) {
@@ -414,55 +407,49 @@ Vector = (function(_super) {
   };
 
   Vector.prototype.add = function(other) {
-    if (this.size() !== other.size()) {
+    var otherElements;
+    otherElements = other.getElements();
+    if (this.size() !== otherElements.length) {
       return null;
     }
-    return this.map(function(x, i) {
-      return x + other.get(i);
+    return this.map(function(element, index) {
+      return x + otherElements[index];
     });
   };
 
   Vector.prototype.subtract = function(other) {
     var otherElements;
     otherElements = other.getElements();
-    if (this.elements.length !== otherElements.length) {
+    if (this.size() !== otherElements.length) {
       return null;
     }
-    return this.map(function(x, i) {
-      return x - otherElements[i];
+    return this.map(function(element, index) {
+      return element - otherElements[index];
     });
   };
 
   Vector.prototype.multiply = function(k) {
-    return this.map(function(x) {
-      return x * k;
+    return this.map(function(element) {
+      return element * k;
     });
   };
 
   Vector.prototype.max = function() {
-    var element, i, max;
-    max = 0;
-    i = this.elements.length;
-    while (i--) {
-      element = Math.abs(this.elements[i]);
-      if (element > min) {
-        max = element;
-      }
-    }
-    return max;
+    return this.reduce((function(previous, element) {
+      return Math.max(previous, element);
+    }), 0);
   };
 
   Vector.prototype.min = function() {
-    var element, i, min;
-    min = Math.POSITIVE_INIFINITY;
-    i = this.elements.length;
-    while (i--) {
-      element = Math.abs(this.elements[i]);
-      if (element < min) {
-        min = element;
-      }
+    var min;
+    min = this.reduce((function(previous, element) {
+      return Math.min(previous, element);
+    }), Number.POSITIVE_INFINITY);
+    if (min === Number.POSITIVE_INFINITY) {
+      return 0;
+    } else {
+      return min;
     }
-    return min;
   };
 
   return Vector;

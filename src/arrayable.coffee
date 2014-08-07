@@ -41,7 +41,7 @@ class Arrayable
     join: () ->
         @elements.join.apply @elements, arguments
     slice: () ->
-        @elements.slice.apply @elements, arguments
+        new @constructor @elements.slice.apply @elements, arguments
     toString: () ->
         @constructor.name + ' [' + @elements.toString.apply @elements, arguments + ']'
     toLocaleString: () ->
@@ -67,7 +67,7 @@ class Arrayable
     keys: () ->
         @elements.keys.apply @elements, arguments
     map: () ->
-        @elements.map.apply @elements, arguments
+        new @constructor @elements.map.apply @elements, arguments
     reduce: () ->
         @elements.reduce.apply @elements, arguments
     reduceRight: () ->
