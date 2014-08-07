@@ -8,9 +8,9 @@ class Arrayable
             @elements = new Array(arguments)
     @name: 'Arrayable'
     @from: () ->
-        new @constructor Array.from.apply @elements, arguments
+        new @ Array.from.apply @elements, arguments
     @of: () ->
-        new @constructor Array.of.apply @elements, arguments
+        new @ Array.of.apply @elements, arguments
     setElements: (@elements) ->
     getElements: ->
         @elements

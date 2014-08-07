@@ -1,15 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
-var Matrix, precision;
+var precision;
 
 precision = 1e-14;
 
-Matrix = {
-  Vector: require('./vector.coffee'),
-  Matrix: require('./matrix.coffee')
-};
+global.Vector = require('./vector.coffee');
 
-global.Matrix = Matrix;
+global.Matrix = require('./matrix.coffee');
 
 
 
@@ -31,11 +28,11 @@ Arrayable = (function() {
   Arrayable.name = 'Arrayable';
 
   Arrayable.from = function() {
-    return new this.constructor(Array.from.apply(this.elements, arguments));
+    return new this(Array.from.apply(this.elements, arguments));
   };
 
   Arrayable.of = function() {
-    return new this.constructor(Array.of.apply(this.elements, arguments));
+    return new this(Array.of.apply(this.elements, arguments));
   };
 
   Arrayable.prototype.setElements = function(elements) {
@@ -296,8 +293,10 @@ Vector = (function(_super) {
     return vector;
   };
 
-  Vector.zero = function(length) {
-    return this.create(length);
+  Vector.zeros = function(length) {
+    return this.create(length, function() {
+      return 0.0;
+    });
   };
 
   Vector.ones = function(length) {

@@ -8,8 +8,8 @@ class Vector extends Arrayable
         while i--
             vector.set i, valueFn i
         vector
-    @zero: (length) ->
-        @.create length
+    @zeros: (length) ->
+        @.create length, () -> 0.0
     @ones: (length) ->
         @.create length, () -> 1.0
     @random: (length) ->
