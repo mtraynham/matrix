@@ -3,17 +3,17 @@ Arrayable = require './arrayable.coffee'
 class Vector extends Arrayable
     @name: 'Vector'
     @create: (length = 0, valueFn = () -> 0.0) ->
-        vector = new @constructor(length)
+        vector = new @ length
         i = length
         while i--
             vector.set i, valueFn i
         vector
     @zero: (length) ->
-        @constructor.create length
+        @.create length
     @ones: (length) ->
-        @constructor.create length, () -> 1.0
+        @.create length, () -> 1.0
     @random: (length) ->
-        @constructor.create length, () -> Math.random()
+        @.create length, () -> Math.random()
     equals: (other) ->
         i = @elements.length
         otherElements = other.getElements()
@@ -65,10 +65,9 @@ class Vector extends Arrayable
         dot = @.dot(other)
         if !dot then Math.abs(dot) <= precision else null
     add: (other) ->
-        otherElements = other.getElements()
-        if @elements.length != otherElements.length
+        if @size() != other.size()
             return null
-        @map (x, i) -> x + otherElements[i]
+        @map (x, i) -> x + other.get(i)
     subtract: (other) ->
         otherElements = other.getElements()
         if @elements.length != otherElements.length

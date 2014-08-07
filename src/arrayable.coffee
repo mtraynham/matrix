@@ -1,10 +1,16 @@
 class Arrayable
-    constructor: () -> @elements = new Array arguments
+    constructor: () ->
+        if arguments.length > 1
+            @elements = arguments.slice()
+        else if Array.isArray arguments[0]
+            @elements = arguments[0].slice()
+        else
+            @elements = new Array(arguments)
     @name: 'Arrayable'
     @from: () ->
-        new @constructor Array.from.apply @, arguments
+        new @constructor Array.from.apply @elements, arguments
     @of: () ->
-        new @constructor Array.of.apply @, arguments
+        new @constructor Array.of.apply @elements, arguments
     setElements: (@elements) ->
     getElements: ->
         @elements
@@ -15,54 +21,56 @@ class Arrayable
     size: () ->
         @elements.length
     fill: () ->
-        @elements.fill.apply @, arguments
+        @elements.fill.apply @elements, arguments
     pop: () ->
-        @elements.pop.apply @, arguments
+        @elements.pop.apply @elements, arguments
     push: () ->
-        @elements.push.apply @, arguments
+        @elements.push.apply @elements, arguments
     reverse: () ->
-        @elements.reverse.apply @, arguments
+        @elements.reverse.apply @elements, arguments
     shift: () ->
-        @elements.shift.apply @, arguments
+        @elements.shift.apply @elements, arguments
     splice: () ->
-        @elements.splice.apply @, arguments
+        @elements.splice.apply @elements, arguments
     unshift: () ->
-        @elements.unshift.apply @, arguments
+        @elements.unshift.apply @elements, arguments
     concat: () ->
-        @elements.concat.apply @, arguments
+        @elements.concat.apply @elements, arguments
     join: () ->
-        @elements.join.apply @, arguments
+        @elements.join.apply @elements, arguments
     slice: () ->
-        @elements.slice.apply @, arguments
+        @elements.slice.apply @elements, arguments
     toString: () ->
-        @constructor.name + @elements.toString.apply @, arguments
+        @constructor.name + ' [' + @elements.toString.apply @elements, arguments + ']'
     toLocaleString: () ->
-        @constructor.name + @elements.toLocaleString.apply @, arguments
+        @constructor.name + ' [' + @elements.toLocaleString.apply @elements, arguments + ']'
     indexOf: () ->
-        @elements.indexOf.apply @, arguments
+        @elements.indexOf.apply @elements, arguments
     lastIndexOf: () ->
-        @elements.lastIndexOf.apply @, arguments
+        @elements.lastIndexOf.apply @elements, arguments
     forEach: () ->
-        @elements.forEach.apply @, arguments
+        @elements.forEach.apply @elements, arguments
     entries: () ->
-        @elements.entries.apply @, arguments
+        @elements.entries.apply @elements, arguments
     every: () ->
-        @elements.every.apply @, arguments
+        @elements.every.apply @elements, arguments
     some: () ->
-        @elements.some.apply @, arguments
+        @elements.some.apply @elements, arguments
     filter: () ->
-        @elements.filter.apply @, arguments
+        @elements.filter.apply @elements, arguments
     find: () ->
-        @elements.find.apply @, arguments
+        @elements.find.apply @elements, arguments
     findIndex: () ->
-        @elements.findIndex.apply @, arguments
+        @elements.findIndex.apply @elements, arguments
     keys: () ->
-        @elements.keys.apply @, arguments
+        @elements.keys.apply @elements, arguments
     map: () ->
-        @elements.map.apply @, arguments
+        @elements.map.apply @elements, arguments
     reduce: () ->
-        @elements.reduce.apply @, arguments
+        @elements.reduce.apply @elements, arguments
     reduceRight: () ->
-        @elements.reduceRight.apply @, arguments
+        @elements.reduceRight.apply @elements, arguments
     clone: () ->
-        new @constructor(@elements)
+        new @constructor @elements
+
+module.exports = Arrayable

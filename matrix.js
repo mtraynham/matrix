@@ -19,17 +19,23 @@ var Arrayable;
 
 Arrayable = (function() {
   function Arrayable() {
-    this.elements = new Array(arguments);
+    if (arguments.length > 1) {
+      this.elements = arguments.slice();
+    } else if (Array.isArray(arguments[0])) {
+      this.elements = arguments[0].slice();
+    } else {
+      this.elements = new Array(arguments);
+    }
   }
 
   Arrayable.name = 'Arrayable';
 
   Arrayable.from = function() {
-    return new this.constructor(Array.from.apply(this, arguments));
+    return new this.constructor(Array.from.apply(this.elements, arguments));
   };
 
   Arrayable.of = function() {
-    return new this.constructor(Array.of.apply(this, arguments));
+    return new this.constructor(Array.of.apply(this.elements, arguments));
   };
 
   Arrayable.prototype.setElements = function(elements) {
@@ -53,103 +59,103 @@ Arrayable = (function() {
   };
 
   Arrayable.prototype.fill = function() {
-    return this.elements.fill.apply(this, arguments);
+    return this.elements.fill.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.pop = function() {
-    return this.elements.pop.apply(this, arguments);
+    return this.elements.pop.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.push = function() {
-    return this.elements.push.apply(this, arguments);
+    return this.elements.push.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.reverse = function() {
-    return this.elements.reverse.apply(this, arguments);
+    return this.elements.reverse.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.shift = function() {
-    return this.elements.shift.apply(this, arguments);
+    return this.elements.shift.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.splice = function() {
-    return this.elements.splice.apply(this, arguments);
+    return this.elements.splice.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.unshift = function() {
-    return this.elements.unshift.apply(this, arguments);
+    return this.elements.unshift.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.concat = function() {
-    return this.elements.concat.apply(this, arguments);
+    return this.elements.concat.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.join = function() {
-    return this.elements.join.apply(this, arguments);
+    return this.elements.join.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.slice = function() {
-    return this.elements.slice.apply(this, arguments);
+    return this.elements.slice.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.toString = function() {
-    return this.constructor.name + this.elements.toString.apply(this, arguments);
+    return this.constructor.name + ' [' + this.elements.toString.apply(this.elements, arguments + ']');
   };
 
   Arrayable.prototype.toLocaleString = function() {
-    return this.constructor.name + this.elements.toLocaleString.apply(this, arguments);
+    return this.constructor.name + ' [' + this.elements.toLocaleString.apply(this.elements, arguments + ']');
   };
 
   Arrayable.prototype.indexOf = function() {
-    return this.elements.indexOf.apply(this, arguments);
+    return this.elements.indexOf.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.lastIndexOf = function() {
-    return this.elements.lastIndexOf.apply(this, arguments);
+    return this.elements.lastIndexOf.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.forEach = function() {
-    return this.elements.forEach.apply(this, arguments);
+    return this.elements.forEach.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.entries = function() {
-    return this.elements.entries.apply(this, arguments);
+    return this.elements.entries.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.every = function() {
-    return this.elements.every.apply(this, arguments);
+    return this.elements.every.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.some = function() {
-    return this.elements.some.apply(this, arguments);
+    return this.elements.some.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.filter = function() {
-    return this.elements.filter.apply(this, arguments);
+    return this.elements.filter.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.find = function() {
-    return this.elements.find.apply(this, arguments);
+    return this.elements.find.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.findIndex = function() {
-    return this.elements.findIndex.apply(this, arguments);
+    return this.elements.findIndex.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.keys = function() {
-    return this.elements.keys.apply(this, arguments);
+    return this.elements.keys.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.map = function() {
-    return this.elements.map.apply(this, arguments);
+    return this.elements.map.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.reduce = function() {
-    return this.elements.reduce.apply(this, arguments);
+    return this.elements.reduce.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.reduceRight = function() {
-    return this.elements.reduceRight.apply(this, arguments);
+    return this.elements.reduceRight.apply(this.elements, arguments);
   };
 
   Arrayable.prototype.clone = function() {
@@ -159,6 +165,8 @@ Arrayable = (function() {
   return Arrayable;
 
 })();
+
+module.exports = Arrayable;
 
 
 
@@ -193,13 +201,13 @@ Matrix = (function(_super) {
         return 0.0;
       };
     }
-    matrix = new this.constructor(rows);
+    matrix = new this(rows);
     n = rows;
     while (n--) {
       row = new Arrayable(columns);
       m = columns;
       while (m--) {
-        vector.set(m, valueFn(n, m));
+        row.set(m, valueFn(n, m));
       }
       matrix.set(n, row);
     }
@@ -207,25 +215,25 @@ Matrix = (function(_super) {
   };
 
   Matrix.zeros = function(rows, columns) {
-    return this.constructor.create(rows, columns, function() {
+    return this.create(rows, columns, function() {
       return 0.0;
     });
   };
 
   Matrix.ones = function(rows, columns) {
-    return this.constructor.create(rows, columns, function() {
+    return this.create(rows, columns, function() {
       return 1.0;
     });
   };
 
   Matrix.random = function(rows, columns) {
-    return this.constructor.create(rows, columns, function() {
+    return this.create(rows, columns, function() {
       return Math.random();
     });
   };
 
   Matrix.identity = function(rows, columns) {
-    return this.constructor.create(rows, columns, function(n, m) {
+    return this.create(rows, columns, function(n, m) {
       if (n === m) {
         return 1.0;
       } else {
@@ -237,7 +245,7 @@ Matrix = (function(_super) {
   Matrix.diagonal = function(vector) {
     var length;
     length = vector.size();
-    return this.constructor.create(length, length, function(n, m) {
+    return this.create(length, length, function(n, m) {
       if (n === m) {
         return vector.get(n);
       } else {
@@ -280,7 +288,7 @@ Vector = (function(_super) {
         return 0.0;
       };
     }
-    vector = new this.constructor(length);
+    vector = new this(length);
     i = length;
     while (i--) {
       vector.set(i, valueFn(i));
@@ -289,17 +297,17 @@ Vector = (function(_super) {
   };
 
   Vector.zero = function(length) {
-    return this.constructor.create(length);
+    return this.create(length);
   };
 
   Vector.ones = function(length) {
-    return this.constructor.create(length, function() {
+    return this.create(length, function() {
       return 1.0;
     });
   };
 
   Vector.random = function(length) {
-    return this.constructor.create(length, function() {
+    return this.create(length, function() {
       return Math.random();
     });
   };
@@ -406,13 +414,11 @@ Vector = (function(_super) {
   };
 
   Vector.prototype.add = function(other) {
-    var otherElements;
-    otherElements = other.getElements();
-    if (this.elements.length !== otherElements.length) {
+    if (this.size() !== other.size()) {
       return null;
     }
     return this.map(function(x, i) {
-      return x + otherElements[i];
+      return x + other.get(i);
     });
   };
 
