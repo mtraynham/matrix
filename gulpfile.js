@@ -83,7 +83,7 @@ var bumpFn = function (type) {
 };
 
 // Default Task
-gulp.task('default', ['setDevelopment','lint', 'build']);
+gulp.task('default', ['setDevelopment', 'lint', 'build']);
 gulp.task('watch', ['setDevelopment', 'setWatch', 'lint', 'build']);
 gulp.task('release', ['lint', 'build']);
 gulp.task('bump:major', function () {
