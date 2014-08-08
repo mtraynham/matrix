@@ -78,20 +78,7 @@ export class Vector extends Array {
         }
         return this.map((element, index) => element - other[index]);
     }
-    multiply (other) {
-        if (!Array.isArray(other)) {
-            return this.map((element) => element * other);
-        }
-        // return [for (i of this.length) for (j of this[i].length) for (k of other.length) ]
-        // this.forEach((row, i) => {
-        //     row.forEach((col, j) => {
-        //         other.forEach((row, k) => {
-
-        //         });
-        //     });
-        // });
-        return null; // TODO ARRAY MULT
-    }
+    multiply () { }
     max () {
         return Math.map.apply(Math, this);
     }
