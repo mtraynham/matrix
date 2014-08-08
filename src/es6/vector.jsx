@@ -2,13 +2,13 @@ export class Vector extends Array {
     constructor () {
         super(arguments);
     }
-    static zeros (length) {
+    static zeros (length = 0) {
         return Vector.from([for (i of length) 0.0]);
     }
-    static ones (length) {
+    static ones (length = 0) {
         return Vector.from([for (i of length) 1.0]);
     }
-    static random (length) {
+    static random (length = 0) {
         return Vector.from([for (i of length) Math.random()]);
     }
     equals (other) {
@@ -19,14 +19,14 @@ export class Vector extends Array {
             Math.abs(element - other[index]) > precision;
         });
     }
-    dot (other) {
+    dot (other = this) {
         if (this.length != other.length) {
             return false;
         }
         this.reduce((previous, element, index) => previous += element * other[index], 0);
     }
     modulus () {
-        return Math.sqrt(this.dot(this));
+        return Math.sqrt(this.dot());
     }
     toUnitVector () {
         var mod = this.modulus();

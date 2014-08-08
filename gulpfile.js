@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     bump = require('gulp-bump'),
     coffeeify = require('coffeeify'),
     coffeeLint = require('gulp-coffeelint'),
+    es6ify = require('es6ify'),
     rename = require('gulp-rename'),
     source = require('vinyl-source-stream'),
     streamify = require('gulp-streamify'),
@@ -19,9 +20,9 @@ gulp.task('lint', function () {
 gulp.task('build', function () {
     var bundler = browserify({
         basedir: __dirname,
-        entries: ['./src/index.coffee'],
+        entries: ['./src/coffee/index.coffee'],
         extensions: ['.coffee'],
-        debug: global.isProduction ? true : false,
+        debug: global.isProduction ? false : true,
         cache: {},
         packageCache: {},
         fullPaths: false
@@ -35,6 +36,34 @@ gulp.task('build', function () {
             .pipe(streamify(uglify()))
             .pipe(rename('matrix.min.js'))
             .pipe(gulp.dest('./'));
+    };
+    if (global.isWatching) {
+        bundler = watchify(bundler);
+        bundler.on('update', bundle);
+    }
+    return bundle();
+});
+
+gulp.task('buildes6', function () {
+    var bundler = browserify({
+        basedir: __dirname,
+        entries: ['./src/es6/vector.jsx'], // TODO SHOULD BE index.jsx
+        extensions: ['.jsx'],
+        debug: global.isProduction ? false : true,
+        cache: {},
+        packageCache: {},
+        fullPaths: false
+    }).add(es6ify.runtime)
+        .transform(es6ify);
+
+    var bundle = function () {
+        return bundler
+            .bundle()
+            .pipe(source('matrix.jsx'))
+            .pipe(gulp.dest('./'));
+            // .pipe(streamify(uglify()))
+            // .pipe(rename('matrix.min.jsx'))
+            // .pipe(gulp.dest('./'));
     };
     if (global.isWatching) {
         bundler = watchify(bundler);
@@ -58,9 +87,9 @@ var bumpFn = function (type) {
 };
 
 // Default Task
-gulp.task('default', ['lint', 'build']);
-gulp.task('watch', ['setProduction', 'setWatch', 'lint', 'build']);
-gulp.task('release', ['setProduction', 'lint', 'build']);
+gulp.task('default', ['lint', 'build', 'buildes6']);
+gulp.task('watch', ['setProduction', 'setWatch', 'lint', 'build', 'buildes6']);
+gulp.task('release', ['setProduction', 'lint', 'build', 'buildes6']);
 gulp.task('bump:major', function () {
     bumpFn('major');
 });
