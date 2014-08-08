@@ -22,7 +22,7 @@ gulp.task('build', function () {
         basedir: __dirname,
         entries: ['./src/coffee/index.coffee'],
         extensions: ['.coffee'],
-        debug: global.isProduction ? false : true,
+        debug: global.isDevelopment ? true : false,
         cache: {},
         packageCache: {},
         fullPaths: false
@@ -49,7 +49,7 @@ gulp.task('buildes6', function () {
         basedir: __dirname,
         entries: ['./src/es6/vector.jsx'], // TODO SHOULD BE index.jsx
         extensions: ['.jsx'],
-        debug: global.isProduction ? false : true,
+        debug: global.isDevelopment ? true : false,
         cache: {},
         packageCache: {},
         fullPaths: false
@@ -76,8 +76,8 @@ gulp.task('setWatch', function () {
     global.isWatching = true;
 });
 
-gulp.task('setProduction', function () {
-    global.isProduction = true;
+gulp.task('setDevelopment', function () {
+    global.isDevelopment = true;
 });
 
 var bumpFn = function (type) {
@@ -87,9 +87,9 @@ var bumpFn = function (type) {
 };
 
 // Default Task
-gulp.task('default', ['lint', 'build', 'buildes6']);
-gulp.task('watch', ['setProduction', 'setWatch', 'lint', 'build', 'buildes6']);
-gulp.task('release', ['setProduction', 'lint', 'build', 'buildes6']);
+gulp.task('default', ['setDevelopment','lint', 'build', 'buildes6']);
+gulp.task('watch', ['setDevelopment', 'setWatch', 'lint', 'build', 'buildes6']);
+gulp.task('release', ['lint', 'build', 'buildes6']);
 gulp.task('bump:major', function () {
     bumpFn('major');
 });
