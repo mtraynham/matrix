@@ -18,7 +18,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('build', function () {
-    var bundler = browserify({
+    var coffeeBundler = browserify({
         basedir: __dirname,
         entries: ['./src/coffee/index.coffee'],
         extensions: ['.coffee'],
@@ -28,24 +28,7 @@ gulp.task('build', function () {
         fullPaths: false
     }).transform(coffeeify);
 
-    var bundle = function () {
-        return bundler
-            .bundle()
-            .pipe(source('matrix.js'))
-            .pipe(gulp.dest('./'))
-            .pipe(streamify(uglify()))
-            .pipe(rename('matrix.min.js'))
-            .pipe(gulp.dest('./'));
-    };
-    if (global.isWatching) {
-        bundler = watchify(bundler);
-        bundler.on('update', bundle);
-    }
-    return bundle();
-});
-
-gulp.task('buildes6', function () {
-    var bundler = browserify({
+    var es6Bundler = browserify({
         basedir: __dirname,
         entries: ['./src/es6/vector.jsx'], // TODO SHOULD BE index.jsx
         extensions: ['.jsx'],
@@ -56,8 +39,18 @@ gulp.task('buildes6', function () {
     }).add(es6ify.runtime)
         .transform(es6ify);
 
-    var bundle = function () {
-        return bundler
+    var bundleCoffee = function () {
+        return coffeeBundler
+            .bundle()
+            .pipe(source('matrix.js'))
+            .pipe(gulp.dest('./'))
+            .pipe(streamify(uglify()))
+            .pipe(rename('matrix.min.js'))
+            .pipe(gulp.dest('./'));
+    };
+
+    var bundleEs6 = function () {
+        return es6Bundler
             .bundle()
             .pipe(source('matrix.jsx'))
             .pipe(gulp.dest('./'));
@@ -65,11 +58,14 @@ gulp.task('buildes6', function () {
             // .pipe(rename('matrix.min.jsx'))
             // .pipe(gulp.dest('./'));
     };
+
     if (global.isWatching) {
-        bundler = watchify(bundler);
-        bundler.on('update', bundle);
+        coffeeBundler = watchify(coffeeBundler);
+        coffeeBundler.on('update', bundleCoffee);
+        es6Bundler = watchify(es6Bundler);
+        es6Bundler.on('update', bundleEs6);
     }
-    return bundle();
+    return [bundleCoffee(), bundleEs6()];
 });
 
 gulp.task('setWatch', function () {
@@ -87,9 +83,9 @@ var bumpFn = function (type) {
 };
 
 // Default Task
-gulp.task('default', ['setDevelopment','lint', 'build', 'buildes6']);
-gulp.task('watch', ['setDevelopment', 'setWatch', 'lint', 'build', 'buildes6']);
-gulp.task('release', ['lint', 'build', 'buildes6']);
+gulp.task('default', ['setDevelopment','lint', 'build']);
+gulp.task('watch', ['setDevelopment', 'setWatch', 'lint', 'build']);
+gulp.task('release', ['lint', 'build']);
 gulp.task('bump:major', function () {
     bumpFn('major');
 });
