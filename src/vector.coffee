@@ -65,9 +65,9 @@ class Vector extends Arrayable
             return null
         @map (element, index) ->
             element - otherElements[index]
-    multiply: (k) ->
+    multiply: (value) ->
         @map (element) ->
-            element * k
+            element * value
     max: () ->
         @reduce ((previous, element) ->
             Math.max(previous, element)), 0
