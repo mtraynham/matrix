@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "main": "matrix.js",
     "scripts": [
-        "matrix.js"
+        "dist/matrix.js"
     ],
     "ignore": [
         ".DS_Store",
@@ -12,6 +12,7 @@
         ".npmignore",
         "node_modules",
         "package.json",
-        "src"
+        "lib",
+        "test"
     ]
 }

@@ -1,9 +1,14 @@
 var gulp = require('gulp'),
+    benchmark = require('gulp-bench'),
     browserify = require('browserify'),
+    browserifyShim = require('browserify-shim'),
     bump = require('gulp-bump'),
-    coffeeify = require('coffeeify'),
-    coffeeLint = require('gulp-coffeelint'),
-    es6ify = require('es6ify'),
+    coveralls = require('gulp-coveralls'),
+    istanbul = require('gulp-istanbul'),
+    jscs = require('gulp-jscs'),
+    jshint = require('gulp-jshint'),
+    jshintStylish = require('jshint-stylish'),
+    mocha = require('gulp-mocha'),
     rename = require('gulp-rename'),
     source = require('vinyl-source-stream'),
     streamify = require('gulp-streamify'),
@@ -11,61 +16,58 @@ var gulp = require('gulp'),
     watchify = require('watchify');
 
 gulp.task('lint', function () {
-    return gulp.src('src/*.coffee')
-        .pipe(coffeeLint('.coffeelint.json'))
-        .pipe(coffeeLint.reporter())
-        .pipe(coffeeLint.reporter('fail'));
+    return gulp
+        .src(['gulpfile.js', 'index.js', 'lib/*.js', 'test/*.js'])
+        .pipe(jscs())
+        .pipe(jshint())
+        .pipe(jshint.reporter(jshintStylish));
 });
 
 gulp.task('build', function () {
-    var coffeeBundler = browserify({
+    var bundler = browserify({
         basedir: __dirname,
-        entries: ['./src/coffee/index.coffee'],
-        extensions: ['.coffee'],
-        debug: global.isDevelopment ? true : false,
+        entries: ['./index.js'],
+        extensions: ['.js'],
+        debug: global.isDevelopment ? false : true,
         cache: {},
         packageCache: {},
         fullPaths: false
-    }).transform(coffeeify);
+    }).transform(browserifyShim);
 
-    var es6Bundler = browserify({
-        basedir: __dirname,
-        entries: ['./src/es6/vector.jsx'], // TODO SHOULD BE index.jsx
-        extensions: ['.jsx'],
-        debug: global.isDevelopment ? true : false,
-        cache: {},
-        packageCache: {},
-        fullPaths: false
-    }).add(es6ify.runtime)
-        .transform(es6ify);
-
-    var bundleCoffee = function () {
-        return coffeeBundler
+    var bundle = function () {
+        return bundler
             .bundle()
-            .pipe(source('matrix.js'))
+            .pipe(source('dist/lodash-joins.js'))
             .pipe(gulp.dest('./'))
             .pipe(streamify(uglify()))
-            .pipe(rename('matrix.min.js'))
+            .pipe(rename('dist/lodash-joins.min.js'))
             .pipe(gulp.dest('./'));
-    };
-
-    var bundleEs6 = function () {
-        return es6Bundler
-            .bundle()
-            .pipe(source('matrix.jsx'))
-            .pipe(gulp.dest('./'));
-            // .pipe(streamify(uglify()))
-            // .pipe(rename('matrix.min.jsx'))
-            // .pipe(gulp.dest('./'));
     };
 
     if (global.isWatching) {
-        coffeeBundler = watchify(coffeeBundler);
-        coffeeBundler.on('update', bundleCoffee);
-        es6Bundler = watchify(es6Bundler);
-        es6Bundler.on('update', bundleEs6);
+        bundler = watchify(bundler);
+        bundler.on('update', bundle);
     }
-    return [bundleCoffee(), bundleEs6()];
+    return bundle();
+});
+
+gulp.task('test', function () {
+    gulp.src(['lib/**/*.js', 'main.js'])
+        .pipe(istanbul()) // Covering files
+        .on('finish', function () {
+            gulp.src(['test/*.js'])
+                .pipe(mocha())
+                .pipe(istanbul.writeReports()) // Creating the reports after tests runned
+                .on('end', function () {
+                    gulp.src('coverage/lcov.info')
+                        .pipe(coveralls());
+                });
+        });
+});
+
+gulp.task('benchmark', function () {
+    return gulp.src('bench/*.js', {read: false})
+        .pipe(benchmark());
 });
 
 gulp.task('setWatch', function () {
