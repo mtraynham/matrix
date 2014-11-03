@@ -1,2 +1,2 @@
-import Test from './lib/test';
-module.exports = Test;
+import NDArray from './lib/ndarray/ndarray';
+module.exports = NDArray;
