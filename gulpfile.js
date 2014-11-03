@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     benchmark = require('gulp-bench'),
     browserify = require('browserify'),
-    browserifyShim = require('browserify-shim'),
+    es6ify = require('es6ify'),
     bump = require('gulp-bump'),
     coveralls = require('gulp-coveralls'),
     istanbul = require('gulp-istanbul'),
@@ -32,15 +32,16 @@ gulp.task('build', function () {
         cache: {},
         packageCache: {},
         fullPaths: false
-    }).transform(browserifyShim);
+    }).add(es6ify.runtime)
+        .transform(es6ify);
 
     var bundle = function () {
         return bundler
             .bundle()
-            .pipe(source('dist/lodash-joins.js'))
+            .pipe(source('dist/matrix.js'))
             .pipe(gulp.dest('./'))
             .pipe(streamify(uglify()))
-            .pipe(rename('dist/lodash-joins.min.js'))
+            .pipe(rename('dist/matrix.min.js'))
             .pipe(gulp.dest('./'));
     };
 
