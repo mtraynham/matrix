@@ -81,5 +81,6 @@
         "checkParamNames": true,
         "requireParamTypes": true
     },
-    "disallowMultipleLineBreaks": true
+    "disallowMultipleLineBreaks": true,
+    "esnext": true
 }
