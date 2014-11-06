@@ -28,7 +28,7 @@ gulp.task('build', function () {
         basedir: __dirname,
         entries: ['./index.js'],
         extensions: ['.js'],
-        debug: global.isDevelopment ? false : true,
+        debug: global.isDevelopment ? true : false,
         cache: {},
         packageCache: {},
         fullPaths: false

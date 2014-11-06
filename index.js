@@ -1,6 +1,4 @@
-import NDArray from './lib/ndarray/NDArray';
-import NilNDArray from './lib/ndarray/NilNDArray';
-import ZeroNDArray from './lib/ndarray/ZeroNDArray';
+import {NDArray, NilNDArray, ZeroNDArray}  from './lib/ndarray/NDArray';
 
 let x = new NDArray([], [], [], 0),
     y = new NilNDArray([]),
@@ -15,3 +13,5 @@ for (var b in y) {
 for (var c in z) {
     f = c[z];
 }
+
+global.NDArray = NDArray;

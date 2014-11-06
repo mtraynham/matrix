@@ -5,6 +5,9 @@
     "scripts": [
         "dist/matrix.js"
     ],
+    "dependencies": {
+        "traceur-runtime": "~0.0.74"
+    },
     "ignore": [
         ".DS_Store",
         ".git",
