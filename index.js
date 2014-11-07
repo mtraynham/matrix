@@ -1,4 +1,4 @@
-import {NDArray, NilNDArray, ZeroNDArray}  from './lib/ndarray/NDArray';
+import {NDArray, NilNDArray, ZeroNDArray}  from './lib/NDArray';
 
 let x = new NDArray([], [], [], 0),
     y = new NilNDArray([]),
