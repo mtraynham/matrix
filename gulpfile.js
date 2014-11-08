@@ -30,7 +30,7 @@ gulp.task('build', function () {
         debug: global.isDevelopment,
         cache: {},
         packageCache: {},
-        fullPaths: false
+        fullPaths: global.isWatching
     }).add(es6ify.runtime)
         .transform(es6ify)
         .require(require.resolve('./index.js'), {entry: true});
