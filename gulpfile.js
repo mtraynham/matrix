@@ -26,14 +26,14 @@ gulp.task('lint', function () {
 gulp.task('build', function () {
     var bundler = browserify({
         basedir: __dirname,
-        entries: ['./index.js'],
         extensions: ['.js'],
-        debug: global.isDevelopment ? true : false,
+        debug: global.isDevelopment,
         cache: {},
         packageCache: {},
         fullPaths: false
     }).add(es6ify.runtime)
-        .transform(es6ify);
+        .transform(es6ify)
+        .require(require.resolve('./index.js'), {entry: true});
 
     var bundle = function () {
         return bundler
