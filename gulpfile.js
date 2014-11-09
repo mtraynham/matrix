@@ -25,25 +25,24 @@ gulp.task('lint', function () {
 
 gulp.task('build', function () {
     var bundler = browserify({
-        basedir: __dirname,
-        extensions: ['.js'],
-        debug: global.isDevelopment,
-        cache: {},
-        packageCache: {},
-        fullPaths: global.isWatching
-    }).add(es6ify.runtime)
-        .transform(es6ify)
-        .require(require.resolve('./index.js'), {entry: true});
-
-    var bundle = function () {
-        return bundler
-            .bundle()
-            .pipe(source('dist/matrix.js'))
-            .pipe(gulp.dest('./'))
-            .pipe(streamify(uglify()))
-            .pipe(rename('dist/matrix.min.js'))
-            .pipe(gulp.dest('./'));
-    };
+            basedir: __dirname,
+            extensions: ['.js'],
+            debug: global.isDevelopment,
+            cache: {},
+            packageCache: {},
+            fullPaths: global.isWatching
+        }).add(es6ify.runtime)
+            .transform(es6ify)
+            .require(require.resolve('./index.js'), {entry: true}), // This has to come outside the options...
+        bundle = function () {
+            return bundler
+                .bundle()
+                .pipe(source('dist/matrix.js'))
+                .pipe(gulp.dest('./'))
+                .pipe(streamify(uglify()))
+                .pipe(rename('dist/matrix.min.js'))
+                .pipe(gulp.dest('./'));
+        };
 
     if (global.isWatching) {
         bundler = watchify(bundler);
