@@ -51,8 +51,9 @@ gulp.task('build', function () {
     return bundle();
 });
 
+// Ok none of this works.
 gulp.task('test', function () {
-    gulp.src(['lib/**/*.js', 'main.js'])
+    gulp.src(['lib/**/*.js'])
         .pipe(istanbul()) // Covering files
         .on('finish', function () {
             gulp.src(['test/*.js'])
@@ -65,6 +66,7 @@ gulp.task('test', function () {
         });
 });
 
+// And neither does this...
 gulp.task('benchmark', function () {
     return gulp.src('bench/*.js', {read: false})
         .pipe(benchmark());
@@ -79,21 +81,17 @@ gulp.task('setDevelopment', function () {
 });
 
 var bumpFn = function (type) {
-    gulp.src(['./bower.json', './package.json'])
-        .pipe(bump({type: type}))
-        .pipe(gulp.dest('./'));
+    return function () {
+        return gulp.src(['./bower.json', './package.json'])
+            .pipe(bump({type: type}))
+            .pipe(gulp.dest('./'));
+    };
 };
 
 // Default Task
 gulp.task('default', ['setDevelopment', 'lint', 'build']);
 gulp.task('watch', ['setDevelopment', 'setWatch', 'lint', 'build']);
 gulp.task('release', ['lint', 'build']);
-gulp.task('bump:major', function () {
-    bumpFn('major');
-});
-gulp.task('bump:minor', function () {
-    bumpFn('minor');
-});
-gulp.task('bump:patch', function () {
-    bumpFn('patch');
-});
+gulp.task('bump:major', bumpFn('major'));
+gulp.task('bump:minor', bumpFn('minor'));
+gulp.task('bump:patch', bumpFn('patch'));
