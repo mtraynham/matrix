@@ -14,4 +14,5 @@ interface INDArray<T> {
     pick (...axes: number[]): INDArray<T>;
     toJSON ();
 }
+
 export default INDArray;

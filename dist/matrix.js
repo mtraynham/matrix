@@ -201,8 +201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                indices[_key2] = arguments[_key2];
 	            }
 	
-	            var index = this.index.apply(this, indices);
-	            return index > -1 ? this.data[index] : null;
+	            return this.data[this.index.apply(this, indices)];
 	        }
 	    }, {
 	        key: 'set',
@@ -211,10 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                indices[_key3 - 1] = arguments[_key3];
 	            }
 	
-	            var index = this.index.apply(this, indices);
-	            if (index > -1) {
-	                this.data[index] = value;
-	            }
+	            this.data[this.index.apply(this, indices)] = value;
 	        }
 	    }, {
 	        key: 'lo',

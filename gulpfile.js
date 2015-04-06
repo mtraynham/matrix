@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     jshintStylish = require('jshint-stylish'),
     mocha = require('gulp-mocha'),
+    tslint = require('gulp-tslint'),
     gulpWebpack = require('gulp-webpack'),
     webpack = require('webpack');
 
@@ -16,6 +17,13 @@ gulp.task('lint', function () {
         .pipe(jscs())
         .pipe(jshint())
         .pipe(jshint.reporter(jshintStylish));
+});
+
+gulp.task('tslint', function () {
+    return gulp
+        .src(['lib/**/*.ts'])
+        .pipe(tslint())
+        .pipe(tslint.report('verbose'));
 });
 
 gulp.task('build', function () {

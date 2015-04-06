@@ -1,6 +1,4 @@
 import INDArray from './INDArray';
-import ArrayUtils from './util/ArrayUtils';
-
 
 /**
  * NDArray - Largely borrowed from https://github.com/mikolalysenko/ndarray
@@ -11,7 +9,6 @@ import ArrayUtils from './util/ArrayUtils';
 class NDArray<T> implements INDArray<T> {
     public data: Array<T>;
 
-    private _data: Array<T>;
     private _shape: Array<number>;
     private _stride: Array<number>;
     private _size: number;
@@ -27,8 +24,8 @@ class NDArray<T> implements INDArray<T> {
         // init stride to the product of shape lengths
         if (!stride) {
             stride = [];
-            let i = this.shape.length,
-                size = 1;
+            let i: number = this.shape.length,
+                size: number = 1;
             while (i--) {
                 stride[i] = size;
                 size *= this.shape[i];
@@ -38,7 +35,7 @@ class NDArray<T> implements INDArray<T> {
         // init offset correctly if negative stride
         if (!offset) {
             offset = this.shape.reduce((prev: number, shaped: number, idx: number) => {
-                let strided = this._stride[idx];
+                let strided: number = this._stride[idx];
                 if (strided < 0) {
                     prev -= (shaped - 1) * strided;
                 }
@@ -62,7 +59,7 @@ class NDArray<T> implements INDArray<T> {
             this._size = 0;
         } else {
             this._shape = shape.map(Math.floor);
-            this._size = this._shape.reduce((previous, shaped) =>
+            this._size = this._shape.reduce((previous: number, shaped: number) =>
                 previous *= shaped, 1);
         }
     }
@@ -78,13 +75,13 @@ class NDArray<T> implements INDArray<T> {
         } else {
             this._stride = stride.map(Math.floor);
             this._order = this._stride
-                .map((stride, index) => [Math.abs(stride), index])
-                .sort((a, b) => a[0] - b[0])
-                .map((term) => term[1]);
+                .map((stride: number, index: number) => [Math.abs(stride), index])
+                .sort((a: Array<number>, b: Array<number>) => a[0] - b[0])
+                .map((term: Array<number>) => term[1]);
         }
     }
 
-    public get offset () {
+    public get offset (): number {
         return this._offset;
     }
 
@@ -92,7 +89,7 @@ class NDArray<T> implements INDArray<T> {
         this._offset = Math.floor(offset);
     }
 
-    public get order () {
+    public get order (): Array<number> {
         return this._order;
     }
 
@@ -103,7 +100,7 @@ class NDArray<T> implements INDArray<T> {
      */
     public index (...indices: Array<number>): number {
         return this.offset +
-            this._stride.reduce((previous, stride, index) =>
+            this._stride.reduce((previous: number, stride: number, index: number) =>
                 previous += stride * Math.floor(indices[index]), 0);
     }
 
@@ -113,8 +110,7 @@ class NDArray<T> implements INDArray<T> {
      * @returns {T}
      */
     public get (...indices: Array<number>): T {
-        let index = this.index.apply(this, indices);
-        return index > -1 ? this.data[index] : null;
+        return this.data[this.index.apply(this, indices)];
     }
 
     /**
@@ -123,10 +119,7 @@ class NDArray<T> implements INDArray<T> {
      * @param {...number} indices
      */
     public set (value: T, ...indices: Array<number>): void {
-        let index = this.index.apply(this, indices);
-        if (index > -1) {
-            this.data[index] = value;
-        }
+        this.data[this.index.apply(this, indices)] = value;
     }
 
     /**
@@ -138,7 +131,7 @@ class NDArray<T> implements INDArray<T> {
         let index: number ;
         return new NDArray(
             this.data,
-            this.shape.map((shape, idx: number) => {
+            this.shape.map((shape: number, idx: number) => {
                 index = Math.floor(indices[idx]);
                 return index < 0 ?
                        shape :
@@ -175,10 +168,10 @@ class NDArray<T> implements INDArray<T> {
      * @returns {NDArray}
      */
     public step (...indices: Array<number>): NDArray<T> {
-        let shape = this._shape.slice(),
-            stride = this._stride.slice(),
-            offset = this.offset;
-        indices.forEach((index, idx) => {
+        let shape: Array<number> = this._shape.slice(),
+            stride: Array<number> = this._stride.slice(),
+            offset: number = this.offset;
+        indices.forEach((index: number, idx: number) => {
             if (typeof index === 'number') {
                 index = Math.floor(index);
                 if (index < 0) {
@@ -204,7 +197,7 @@ class NDArray<T> implements INDArray<T> {
             axis: number;
         this.shape.forEach((item: number, idx: number) => {
             axis = axes[idx] || idx;
-            shape[idx] = stride[axis]
+            shape[idx] = stride[axis];
             stride[idx] = shape[axis];
         });
         return new NDArray(this.data, shape, stride, this.offset);
@@ -220,7 +213,7 @@ class NDArray<T> implements INDArray<T> {
             stride: Array<number> = [],
             offset: number = 0,
             axis: number;
-        this.shape.forEach((item, idx) => {
+        this.shape.forEach((item: number, idx: number) => {
             axis = axes[idx];
             if (axis >= 0) {
                 offset += Math.floor(stride[idx] * axis);
