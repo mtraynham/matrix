@@ -3,12 +3,10 @@ import NDArray from './NDArray';
 /**
  * A Nil Dimensioned NDArray
  */
-export class NilNDArray<T> extends NDArray<T> {
-    /**
-     * Create an NilNDArray
-     * @param {Array<T>|T} data
-     */
+class NilNDArray<T> extends NDArray<T> {
     constructor (data: T|Array<T> = []) {
         super(data);
     }
 }
+
+export default NilNDArray;

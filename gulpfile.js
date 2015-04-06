@@ -12,7 +12,7 @@ var gulp = require('gulp'),
 
 gulp.task('lint', function () {
     return gulp
-        .src(['gulpfile.js', 'index.js', 'bench/**/*.js', 'lib/**/*.js', 'test/**/*.js'])
+        .src(['gulpfile.js', 'bench/**/*.js', 'test/**/*.js'])
         .pipe(jscs())
         .pipe(jshint())
         .pipe(jshint.reporter(jshintStylish));
@@ -23,16 +23,14 @@ gulp.task('build', function () {
         .pipe(gulpWebpack({
             watch: global.isWatching,
             entry: './index.js',
-            externals: {
-                'lodash': '_'
-            },
             output: {
-                filename: 'lodash-joins.js',
-                library: '_',
+                filename: 'matrix.js',
+                library: 'matrix',
                 libraryTarget: 'umd'
             },
             module: {
-                preLoaders: [{test: /\.js$/, loader: 'source-map-loader'}]
+                preLoaders: [{test: /\.js$/, loader: 'source-map-loader'}],
+                loaders: [{test: /\.js$/, loader: 'babel-loader'}]
             },
             devtool: 'source-map'
         }))
@@ -43,17 +41,17 @@ gulp.task('uglify', function () {
     return gulp.src('index.js')
         .pipe(gulpWebpack({
             entry: './index.js',
-            externals: {
-                'lodash': '_',
-            },
             output: {
-                filename: 'lodash-joins.min.js',
-                library: '_',
+                filename: 'matrix.min.js',
+                library: 'matrix',
                 libraryTarget: 'umd'
             },
             plugins: [
                 new webpack.optimize.UglifyJsPlugin()
-            ]
+            ],
+            module: {
+                loaders: [{test: /\.js$/, loader: 'babel-loader'}]
+            }
         }))
         .pipe(gulp.dest('dist/'));
 });

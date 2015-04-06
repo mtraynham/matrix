@@ -1,5 +1,11 @@
-import {NDArray, NilNDArray, ZeroNDArray}  from './lib/NDArray';
+import NDArray from './lib/NDArray';
+import NilNDArray from './lib/NilNDArray';
+import ZeroNDArray from './lib/ZeroNDArray';
+import ArrayUtils from './lib/util/ArrayUtils';
 
-global.NilNDArray = NilNDArray;
-global.NDArray = NDArray;
-global.ZeroNDArray = ZeroNDArray;
+export {
+    NilNDArray,
+    ZeroNDArray,
+    NDArray,
+    ArrayUtils
+};
