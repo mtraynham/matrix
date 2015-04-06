@@ -1,0 +1,22 @@
+{
+    "version": "1.4.1",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./lib/INDArray.ts",
+        "./lib/NDArray.ts",
+        "./lib/NilNDArray.ts",
+        "./lib/ZeroNDArray.ts",
+        "./lib/util/ArrayUtils.ts"
+    ]
+}

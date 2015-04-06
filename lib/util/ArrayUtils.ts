@@ -1,4 +1,4 @@
-export class ArrayUtils {
+class ArrayUtils {
 
     /**
      * Fill an array using a function
@@ -7,7 +7,7 @@ export class ArrayUtils {
      * @param {Function(value: T, filler: T)} fn
      * @returns {Array.<T>}
      */
-    public static fill <T>(array: Array<T>, filler: Function = (value: T, index: Number) => value) {
+    public static fill <T>(array: Array<T>, filler: (value: T, index: Number) => T) {
         var i = array.length;
         while (i--) {
             array[i] = filler(array[i], i);
@@ -22,8 +22,8 @@ export class ArrayUtils {
      * @param {T} filler
      * @returns {Array.<T>}
      */
-    public static fillNull <T>(array: Array<T>, filler: T = 0) {
-        return ArrayUtils.fill(array, (value) => value || filler);
+    public static fillEmpty <T>(array: Array<T>, filler: T) {
+        return ArrayUtils.fill(array, (value: T) => value || filler);
     }
 
     /**
@@ -43,7 +43,7 @@ export class ArrayUtils {
      * @param {Array.<T>} array
      * @returns {Array.<T>}
      */
-    public static fillZero <T>(array: Array<T>) {
+    public static fillZero (array: Array<number>) {
         return ArrayUtils.fillValue(array, 0);
     }
 
@@ -53,7 +53,7 @@ export class ArrayUtils {
      * @param {Array.<T>} array
      * @returns {Array.<T>}
      */
-    public static fillOnes <T>(array: Array<T>) {
+    public static fillOnes (array: Array<number>) {
         return ArrayUtils.fillValue(array, 1);
     }
 
@@ -63,8 +63,8 @@ export class ArrayUtils {
      * @param {Array.<T>} array
      * @returns {Array.<T>}
      */
-    public static fillIota <T>(array: Array<T>) {
-        return ArrayUtils.fill(array, (value, index) => index);
+    public static fillIota (array: Array<number>) {
+        return ArrayUtils.fill(array, (value: number, index: number) => index);
     }
 
     /**
@@ -76,9 +76,11 @@ export class ArrayUtils {
      * @param {T} nonDiagonal
      * @returns {*}
      */
-    public static fillDiagonal <T>(array: Array<T>, dimensions:Number = 2, diagonal:Number = 1, nonDiagonal:Number = 0) {
-        return ArrayUtils.fill(array, (value, index) => {
+    public static fillDiagonal <T>(array: Array<T>, diagonal: T, nonDiagonal: T, dimensions: number = 2) {
+        return ArrayUtils.fill(array, (value: T, index: number) => {
             return Math.floor(dimensions / index) === dimensions % index ? diagonal : nonDiagonal;
         });
     }
 }
+
+export default ArrayUtils;

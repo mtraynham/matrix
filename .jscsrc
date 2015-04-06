@@ -1,3 +1,4 @@
+
 {
     "requireCurlyBraces": [
         "if",
@@ -11,7 +12,7 @@
     "requireOperatorBeforeLineBreak": true,
     "requireCamelCaseOrUpperCaseIdentifiers": true,
     "maximumLineLength": {
-        "value": 120,
+        "value": 140,
         "allowComments": true,
         "allowRegex": true
     },
@@ -20,6 +21,7 @@
     "disallowMultipleLineStrings": true,
     "disallowMixedSpacesAndTabs": true,
     "disallowTrailingWhitespace": true,
+    "disallowSpaceAfterPrefixUnaryOperators": true,
     "requireSpaceAfterKeywords": [
         "if",
         "else",
@@ -70,9 +72,10 @@
     "requireSpaceAfterBinaryOperators": true,
     "requireSpacesInConditionalExpression": true,
     "requireSpaceBeforeBlockStatements": true,
+    "requireLineFeedAtFileEnd": true,
     "requireSpacesInFunctionExpression": {
-       "beforeOpeningRoundBrace": true,
-       "beforeOpeningCurlyBrace": true
+        "beforeOpeningRoundBrace": true,
+        "beforeOpeningCurlyBrace": true
     },
     "disallowSpacesInsideObjectBrackets": "all",
     "disallowSpacesInsideArrayBrackets": "all",
@@ -81,6 +84,5 @@
         "checkParamNames": true,
         "requireParamTypes": true
     },
-    "disallowMultipleLineBreaks": true,
-    "esnext": true
+    "disallowMultipleLineBreaks": true
 }
