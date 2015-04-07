@@ -15,10 +15,7 @@ class NDArray<T> implements INDArray<T> {
     private _order: Array<number>;
     private _offset: number;
 
-    constructor (data: T|Array<T> = [],
-                 shape?: Array<number>,
-                 stride?: Array<number>,
-                 offset?: number) {
+    constructor(data: T|Array<T> = [], shape?: Array<number>, stride?: Array<number>, offset?: number) {
         this.data = <Array<T>> (data instanceof Array ? data : [data]);
         this.shape = shape || (this.data ? [this.data.length] : []);
         // init stride to the product of shape lengths
@@ -45,15 +42,15 @@ class NDArray<T> implements INDArray<T> {
         this.offset = offset;
     }
 
-    public get size () {
+    public get size() {
         return this._size;
     }
 
-    public get shape (): Array<number> {
+    public get shape(): Array<number> {
         return this._shape;
     }
 
-    public set shape (shape: Array<number>) {
+    public set shape(shape: Array<number>) {
         if (!shape || !shape.length) {
             this._shape = [];
             this._size = 0;
@@ -64,11 +61,11 @@ class NDArray<T> implements INDArray<T> {
         }
     }
 
-    public get stride (): Array<number> {
+    public get stride(): Array<number> {
         return this._stride;
     }
 
-    public set stride (stride: Array<number>) {
+    public set stride(stride: Array<number>) {
         if (!stride || !stride.length) {
             this._stride = [];
             this._order = [];
@@ -81,24 +78,22 @@ class NDArray<T> implements INDArray<T> {
         }
     }
 
-    public get offset (): number {
+    public get offset(): number {
         return this._offset;
     }
 
-    public set offset (offset: number) {
+    public set offset(offset: number) {
         this._offset = Math.floor(offset);
     }
 
-    public get order (): Array<number> {
+    public get order(): Array<number> {
         return this._order;
     }
 
     /**
      * Get a particular index of the NDArray
-     * @param {number} indices
-     * @returns {number}
      */
-    public index (...indices: Array<number>): number {
+    public index(...indices: Array<number>): number {
         return this.offset +
             this._stride.reduce((previous: number, stride: number, index: number) =>
                 previous += stride * Math.floor(indices[index]), 0);
@@ -106,28 +101,22 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Get a particular value of the NDArray at an index
-     * @param {...number} indices
-     * @returns {T}
      */
-    public get (...indices: Array<number>): T {
+    public get(...indices: Array<number>): T {
         return this.data[this.index.apply(this, indices)];
     }
 
     /**
      * Set a particular value of the NDArray at an index
-     * @param {T} value
-     * @param {...number} indices
      */
-    public set (value: T, ...indices: Array<number>): void {
+    public set(value: T, ...indices: Array<number>): void {
         this.data[this.index.apply(this, indices)] = value;
     }
 
     /**
      * Creates a shifted view of the NDArray from the top-left
-     * @param {...number} indices
-     * @returns {NDArray}
      */
-    public lo (...indices: Array<number>): NDArray<T> {
+    public lo(...indices: Array<number>): NDArray<T> {
         let index: number ;
         return new NDArray(
             this.data,
@@ -144,10 +133,8 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Creates a shifted view of the NDArray from the bottom right
-     * @param {...number} indices
-     * @returns {NDArray}
      */
-    public hi (...indices: Array<number>): NDArray<T> {
+    public hi(...indices: Array<number>): NDArray<T> {
         let index: number;
         return new NDArray(
             this.data,
@@ -164,10 +151,8 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Alters the stride length by rescaling the NDArray
-     * @param {...number} indices
-     * @returns {NDArray}
      */
-    public step (...indices: Array<number>): NDArray<T> {
+    public step(...indices: Array<number>): NDArray<T> {
         let shape: Array<number> = this._shape.slice(),
             stride: Array<number> = this._stride.slice(),
             offset: number = this.offset;
@@ -188,10 +173,8 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Transposes the indices in place of the NDArray
-     * @param {...number} axes
-     * @returns {NDArray}
      */
-    public transpose (...axes: Array<number>): NDArray<T> {
+    public transpose(...axes: Array<number>): NDArray<T> {
         let stride: Array<number> = [],
             shape: Array<number> = [],
             axis: number;
@@ -205,10 +188,8 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Pull out a subarray from a given NDArray
-     * @param {...number} axes
-     * @returns {NDArray}
      */
-    public pick (...axes: Array<number>): NDArray<T> {
+    public pick(...axes: Array<number>): NDArray<T> {
         let shape: Array<number> = [],
             stride: Array<number> = [],
             offset: number = 0,
@@ -227,9 +208,8 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Returns the json representation
-     * @returns {*}
      */
-    public toJSON (): Object {
+    public toJSON(): Object {
         return {
             data: this.data,
             shape: this.shape,
@@ -240,17 +220,15 @@ class NDArray<T> implements INDArray<T> {
 
     /**
      * Returns the string representation
-     * @returns {String}
      */
-    public toString (): string {
+    public toString(): string {
         return this.data.toString();
     }
 
     /**
      * Returns the primitive representation
-     * @returns {Array<number>}
      */
-    public valueOf () {
+    public valueOf() {
         return this.data.valueOf();
     }
 }

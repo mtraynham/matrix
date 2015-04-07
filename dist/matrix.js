@@ -74,14 +74,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ZeroNDArray2 = _interopRequireWildcard(_ZeroNDArray);
 	
-	var _ArrayUtils = __webpack_require__(4);
+	var _Arrays = __webpack_require__(4);
 	
-	var _ArrayUtils2 = _interopRequireWildcard(_ArrayUtils);
+	var _Arrays2 = _interopRequireWildcard(_Arrays);
 	
 	exports.NilNDArray = _NilNDArray2['default'];
 	exports.ZeroNDArray = _ZeroNDArray2['default'];
 	exports.NDArray = _NDArray2['default'];
-	exports.ArrayUtils = _ArrayUtils2['default'];
+	exports.Arrays = _Arrays2['default'];
 
 /***/ },
 /* 1 */
@@ -406,7 +406,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ZeroNDArray;
 	})(_NDArray3['default']);
 	
-	exports.ZeroNDArray = ZeroNDArray;
+	exports['default'] = ZeroNDArray;
+	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
@@ -422,12 +423,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var ArrayUtils = (function () {
-	    function ArrayUtils() {
-	        _classCallCheck(this, ArrayUtils);
+	var Arrays = (function () {
+	    function Arrays() {
+	        _classCallCheck(this, Arrays);
 	    }
 	
-	    _createClass(ArrayUtils, null, [{
+	    _createClass(Arrays, null, [{
 	        key: "fill",
 	        value: function fill(array, filler) {
 	            var i = array.length;
@@ -439,49 +440,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "fillEmpty",
 	        value: function fillEmpty(array, filler) {
-	            return ArrayUtils.fill(array, function (value) {
+	            return Arrays.fill(array, function (value) {
 	                return value || filler;
 	            });
 	        }
 	    }, {
 	        key: "fillValue",
 	        value: function fillValue(array, filler) {
-	            return ArrayUtils.fill(array, function () {
+	            return Arrays.fill(array, function () {
 	                return filler;
 	            });
 	        }
 	    }, {
 	        key: "fillZero",
 	        value: function fillZero(array) {
-	            return ArrayUtils.fillValue(array, 0);
+	            return Arrays.fillValue(array, 0);
 	        }
 	    }, {
 	        key: "fillOnes",
 	        value: function fillOnes(array) {
-	            return ArrayUtils.fillValue(array, 1);
+	            return Arrays.fillValue(array, 1);
 	        }
 	    }, {
 	        key: "fillIota",
 	        value: function fillIota(array) {
-	            return ArrayUtils.fill(array, function (value, index) {
+	            return Arrays.fill(array, function (value, index) {
 	                return index;
 	            });
 	        }
 	    }, {
 	        key: "fillDiagonal",
 	        value: function fillDiagonal(array, diagonal, nonDiagonal) {
-	            var dimensions = arguments[3] === undefined ? 2 : arguments[3];
+	            var dimensions = arguments[3] === undefined ? 1 : arguments[3];
 	
-	            return ArrayUtils.fill(array, function (value, index) {
-	                return Math.floor(dimensions / index) === dimensions % index ? diagonal : nonDiagonal;
+	            return Arrays.fill(array, function (value, index) {
+	                return Math.floor(index / dimensions) === index % dimensions ? diagonal : nonDiagonal;
 	            });
 	        }
 	    }]);
 	
-	    return ArrayUtils;
+	    return Arrays;
 	})();
 	
-	exports["default"] = ArrayUtils;
+	exports["default"] = Arrays;
 	module.exports = exports["default"];
 
 /***/ }

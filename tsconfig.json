@@ -4,7 +4,7 @@
         "target": "es6",
         "module": "commonjs",
         "declaration": false,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "removeComments": true,
         "noLib": false
     },
@@ -17,6 +17,6 @@
         "./lib/NDArray.ts",
         "./lib/NilNDArray.ts",
         "./lib/ZeroNDArray.ts",
-        "./lib/util/ArrayUtils.ts"
+        "./lib/util/Arrays.ts"
     ]
 }
