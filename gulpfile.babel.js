@@ -1,5 +1,6 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import {generate} from 'dts-generator';
 import {Instrumenter} from 'isparta';
 import jshintStylish from 'jshint-stylish';
 import webpackStream from 'webpack-stream';
@@ -22,18 +23,18 @@ const bump = (type) =>
         .pipe(gulp.dest('./'));
 
 // Lint Task
-gulp.task('lintjs', () =>
+gulp.task('lint-js', () =>
     gulp.src(['gulpfile.babel.js', 'webpack/**/*.js'])
         .pipe($.jscs())
         .pipe($.jshint())
         .pipe($.jshint.reporter(jshintStylish)));
 
-gulp.task('lintts', () =>
+gulp.task('lint-ts', () =>
     gulp.src(['index.ts', 'lib/**/*.ts', 'test/**/*.ts'])
         .pipe($.tslint())
         .pipe($.tslint.report('verbose')));
 
-gulp.task('lint', ['lintjs', 'lintts']);
+gulp.task('lint', ['lint-js', 'lint-ts']);
 
 // Build Task
 gulp.task('build', ['lint'],
@@ -70,6 +71,15 @@ gulp.task('test-browser', ['test-browser-build'], () => {
         .pipe($.open('<%file.path%>'));
     gulp.watch(['lib/**/*.ts', 'test/**/*.ts'], ['test-browser-build']);
 });
+
+// dts Generation
+gulp.task('dts-generate', () =>
+    generate({
+        name: 'matrix',
+        baseDir: '.',
+        files: ['index.ts', 'lib/**/*.ts'],
+        main: 'index.ts',
+        out: 'dist/matrix.d.ts'}));
 
 // Bump Tasks
 gulp.task('bump:major', bump.bind(this, 'major'));
