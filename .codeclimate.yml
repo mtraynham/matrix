@@ -1,0 +1,5 @@
+languages:
+    JavaScript: true
+    TypeScript: true
+exclude_paths:
+- "dist/*"
