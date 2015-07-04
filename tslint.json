@@ -2,7 +2,6 @@
     "rules": {
         "align": [true,
             "parameters",
-            "arguments",
             "statements"
         ],
         "ban": false,
@@ -24,6 +23,7 @@
             "static-before-instance",
             "variables-before-functions"
         ],
+        "no-any": false,
         "no-arg": true,
         "no-bitwise": true,
         "no-console": [true,
@@ -35,7 +35,6 @@
         ],
         "no-construct": true,
         "no-constructor-vars": true,
-        "no-consecutive-blank-lines": false,
         "no-debugger": true,
         "no-duplicate-key": true,
         "no-duplicate-variable": true,
@@ -45,10 +44,11 @@
         "no-switch-case-fall-through": true,
         "no-trailing-comma": true,
         "no-trailing-whitespace": true,
+        "no-unreachable": true,
         "no-unused-expression": true,
         "no-unused-variable": true,
-        "no-unreachable": true,
         "no-use-before-declare": true,
+        "no-var-keyword": true,
         "no-var-requires": true,
         "one-line": [true,
             "check-open-brace",
@@ -62,20 +62,19 @@
         "switch-default": true,
         "triple-equals": [true, "allow-null-check"],
         "typedef": [true,
+            "call-signature",
             "parameter",
             "property-declaration",
             "variable-declaration",
             "member-variable-declaration"
         ],
-        "typedef-whitespace": [true,
-            {
-                "call-signature": "nospace",
-                "index-signature": "nospace",
-                "parameter": "nospace",
-                "property-declaration": "nospace",
-                "variable-declaration": "nospace"
-            }
-        ],
+        "typedef-whitespace": [true, {
+            "call-signature": "nospace",
+            "index-signature": "nospace",
+            "parameter": "nospace",
+            "property-declaration": "nospace",
+            "variable-declaration": "nospace"
+        }],
         "use-strict": [true,
             "check-module",
             "check-function"
