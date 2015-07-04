@@ -13,6 +13,7 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "./index.ts",
         "./lib/INDArray.ts",
         "./lib/NDArray.ts",
         "./lib/NilNDArray.ts",

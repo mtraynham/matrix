@@ -12,34 +12,31 @@ const banner = template(readFileSync(__dirname + '/LICENSE_BANNER', 'utf8'))({
 });
 
 const base = {
-    externals: {
-        'lodash': {
-            root: '_',
-            commonJs: 'lodash',
-            commonjs2: 'lodash',
-            amd: 'lodash'
-        }
+    resolve: {
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
     },
     output: {
         libraryTarget: 'umd',
-        devtoolModuleFilenameTemplate: 'webpack:///lodash-joins/[resource-path]'
+        devtoolModuleFilenameTemplate: 'webpack:///matrix/[resource-path]'
     },
     module: {
         preLoaders: [{test: /\.js$/, loader: 'source-map-loader'}],
-        loaders: [{
-            test: /\.js$/,
-            exclude: /(node_modules|bower_components)/,
-            loader: 'babel-loader?optional[]=runtime'
-        }]
+        loaders: [
+            {
+                test: /\.ts$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: 'ts-loader!babel-loader?optional[]=runtime'
+            }
+        ]
     },
     devtool: 'source-map'
 };
 
 export const build = merge({
-    entry: './index.js',
+    entry: './index.ts',
     output: {
-        filename: 'lodash-joins.js',
-        library: '_'
+        filename: 'matrix.js',
+        library: 'm'
     },
     plugins: [
         new BannerPlugin(banner, {raw: true})
@@ -47,10 +44,10 @@ export const build = merge({
 }, base);
 
 export const uglify = merge({
-    entry: './index.js',
+    entry: './index.ts',
     output: {
-        filename: 'lodash-joins.min.js',
-        library: '_'
+        filename: 'matrix.min.js',
+        library: 'm'
     },
     plugins: [
         new optimize.UglifyJsPlugin(),

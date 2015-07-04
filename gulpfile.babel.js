@@ -13,7 +13,7 @@ const webpack = (src, opts, dest) =>
         .pipe(gulp.dest(dest));
 
 const test = () =>
-    gulp.src(['test/unit/*.js'], {read: false})
+    gulp.src(['test/unit/*.ts'], {read: false})
         .pipe($.mocha());
 
 const bump = (type) =>
@@ -22,11 +22,18 @@ const bump = (type) =>
         .pipe(gulp.dest('./'));
 
 // Lint Task
-gulp.task('lint', () =>
-    gulp.src(['gulpfile.babel.js', 'index.js', 'bench/**/*.js', 'lib/**/*.js', 'test/**/*.js', 'webpack/**/*.js'])
+gulp.task('lintjs', () =>
+    gulp.src(['gulpfile.babel.js', 'webpack/**/*.js'])
         .pipe($.jscs())
         .pipe($.jshint())
         .pipe($.jshint.reporter(jshintStylish)));
+
+gulp.task('lintts', () =>
+    gulp.src(['index.ts', 'lib/**/*.ts', 'test/**/*.ts'])
+        .pipe($.tslint())
+        .pipe($.tslint.report('verbose')));
+
+gulp.task('lint', ['lintjs', 'lintts']);
 
 // Build Task
 gulp.task('build', ['lint'],
@@ -42,7 +49,7 @@ gulp.task('test', ['lint'],
 
 // Coverage Task
 gulp.task('coverage', ['lint'], () =>
-    gulp.src(['lib/**/*.js', 'main.js'])
+    gulp.src(['lib/**/*.ts', 'index.ts'])
         .pipe($.istanbul({instrumenter: Instrumenter}))
         .pipe($.istanbul.hookRequire())
         .on('finish', () =>
@@ -54,20 +61,15 @@ gulp.task('coverage', ['lint'], () =>
 
 // Browser Test Tasks
 gulp.task('test-browser-build', ['lint'], () =>
-    webpack(['test/**/*.js'], webTest, './.tmp')
+    webpack(['test/**/*.ts'], webTest, './.tmp')
         .pipe($.livereload()));
 
 gulp.task('test-browser', ['test-browser-build'], () => {
     $.livereload.listen({port: 35729, host: 'localhost', start: true});
     gulp.src('test/runner.html')
         .pipe($.open('<%file.path%>'));
-    gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test-browser-build']);
+    gulp.watch(['lib/**/*.ts', 'test/**/*.ts'], ['test-browser-build']);
 });
-
-// Benchmark Task
-gulp.task('benchmark', () =>
-    gulp.src('bench/*.js', {read: false})
-        .pipe($.bench()));
 
 // Bump Tasks
 gulp.task('bump:major', bump.bind(this, 'major'));

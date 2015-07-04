@@ -6,7 +6,7 @@ import INDArray from './INDArray';
  *
  * Base class for Matrix/Vector
  */
-class NDArray<T> implements INDArray<T> {
+export default class NDArray<T> implements INDArray<T> {
     public data: Array<T>;
 
     private _shape: Array<number>;
@@ -42,7 +42,7 @@ class NDArray<T> implements INDArray<T> {
         this.offset = offset;
     }
 
-    public get size() {
+    public get size(): number {
         return this._size;
     }
 
@@ -228,9 +228,7 @@ class NDArray<T> implements INDArray<T> {
     /**
      * Returns the primitive representation
      */
-    public valueOf() {
+    public valueOf(): Object {
         return this.data.valueOf();
     }
 }
-
-export default NDArray;
